@@ -3,19 +3,24 @@
 
 class Exception {};
 
-class ExceptionDataset :    public Exception {};
-class ExceptionGenerator :  public Exception {};
+class ExceptionDataset                 : public Exception {};
 
-class ExceptionDatasetUninitialized :   public ExceptionDataset {};
-class ExceptionOutOfRange :             public ExceptionDataset {};
+class ExceptionGenerator               : public Exception {};
 
-class ExceptionGeneratorEmpty : public ExceptionGenerator {};
+class ExceptionDatasetUninitialized    : public ExceptionDataset {};
 
-class ExceptionTruthTable : public Exception {};
+class ExceptionOutOfRange              : public ExceptionDataset {};
+
+class ExceptionGeneratorEmpty          : public ExceptionGenerator {};
+
+class ExceptionNodeNameGeneratorClone  : public ExceptionGenerator {};
+
+class ExceptionTruthTable              : public Exception {};
 
 class ExceptionInvalidVectorAssignment : public ExceptionTruthTable {};
-class ExceptionTruthTableInvalidSize : public ExceptionTruthTable {};
 
-static void throwFalse(bool i) {if(!i) throw i;}
+class ExceptionTruthTableInvalidSize   : public ExceptionTruthTable {};
+
+static void throwFalse(bool i) { if (!i) throw i; }
 
 #endif

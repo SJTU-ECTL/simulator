@@ -1,13 +1,16 @@
-/*
 #include "simu_res_type.h"
+#include <algorithm>
 
 simulation_result::simulation_result
-		(BooleanNetwork *b_net,
-		 size_t sample_num) : sample_num(sample_num) {
-	size_t input_num = b_net->input_num();
-	size_t output_num = b_net->output_num();
-	this->input_result.resize(input_num);
-	this->output_result.resize(output_num);
-	for (auto &v : input_result) v.resize(input_num);
-	for (auto &v : output_result) v.resize(output_num);
-}*/
+		(BooleanNetwork *_net,
+		 size_t _s) : sample_num(_s) {
+	size_t net_inpNum = _net->input_num();
+	size_t net_outNum = _net->output_num();
+
+	for (auto &i : {std::make_pair(this->input_result_vec, net_inpNum),
+					std::make_pair(this->output_result_vec, net_outNum)}) {
+		i.first.reserve(i.second);
+		for (auto &_ : i.first) _.reserve(i.second);
+	}
+
+}
