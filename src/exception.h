@@ -15,6 +15,14 @@ class ExceptionGeneratorEmpty          : public ExceptionGenerator {};
 
 class ExceptionNodeNameGeneratorClone  : public ExceptionGenerator {};
 
+class ExceptionPatternGenerator        : public ExceptionGenerator {};
+
+class ExceptionFPGInputLeqZero         : public ExceptionPatternGenerator {};
+
+class ExceptionFPGInputTooLarge        : public ExceptionPatternGenerator {};
+
+class ExceptionRPGSmpLeqZero           : public ExceptionPatternGenerator {};
+
 class ExceptionTruthTable              : public Exception {};
 
 class ExceptionInvalidVectorAssignment : public ExceptionTruthTable {};
