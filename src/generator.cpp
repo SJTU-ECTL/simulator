@@ -3,27 +3,27 @@
 
 template <class T>
 template <size_t n>
-static_sequence_generator::static_sequence_generator(const T (&seq)[n])
+static_sequence_generator<T>::static_sequence_generator(const T (&seq)[n])
 		: size(n), count(0), data((const T*) &seq) {}
 
 template <class T>
-bool static_sequence_generator::has_end() const {
+bool static_sequence_generator<T>::has_end() const {
 	return count >= size;
 }
 
 template <class T>
-T static_sequence_generator::generate() {
+T static_sequence_generator<T>::generate() {
 	if (!has_end()) return data [count++];
 	throw ExceptionGeneratorEmpty ();
 }
 
 template <class T>
-generator<T>* static_sequence_generator::clone() const {
+generator<T>* static_sequence_generator<T>::clone() const {
 	return new static_sequence_generator (data, size);
 }
 
 template <class T>
-size_t static_sequence_generator::get_size() const {
+size_t static_sequence_generator<T>::get_size() const {
 	return count;
 }
 
