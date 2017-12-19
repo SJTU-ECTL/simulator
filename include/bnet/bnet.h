@@ -5,7 +5,7 @@ class BooleanNetwork {
 private:
     BnetNetwork *net;
 public:
-    BooleanNetwork(const std::string &file);
+    explicit BooleanNetwork(const std::string &file);
 
     ~BooleanNetwork();
 

@@ -1,5 +1,5 @@
-#ifndef SIMULATOR_URANDOM_H
-#define SIMULATOR_URANDOM_H
+#ifndef __SIMULATOR__URANDOM__H__
+#define __SIMULATOR__URANDOM__H__
 
 #include <bitset>
 #include <vector>
