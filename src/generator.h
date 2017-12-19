@@ -18,30 +18,56 @@ public:
 
 template <class T>
 class static_sequence_generator : public generator<T> {
-	const T *data;
-	size_t size, count;
+	const T *__data;
+	size_t __size, __count;
 	static_sequence_generator(const T* _data, size_t _size)
-			: data(_data), size(_size), count(0) {};
+			: __data(_data), __size(_size)
+			, __count(0) {};
 public:
-	template <size_t n> explicit static_sequence_generator(const T (&seq)[n]);
+	template <size_t _n>
+	explicit static_sequence_generator(const T (&seq)[_n])
+			: __count(0), __data(seq)
+			, __size(_n) {}
 	T generate();
 	bool has_end() const ;
 	generator<T> *clone() const ;
 	size_t get_size() const ;
 };
 
+template <class T>
+T static_sequence_generator<T>::generate() {
+	if (!has_end()) return __data [__count++];
+	throw ExceptionGeneratorEmpty ();
+}
+
+template <class T>
+bool static_sequence_generator<T>::has_end() const {
+	return __count >= __size;
+}
+
+template <class T>
+generator<T>* static_sequence_generator<T>::clone() const {
+	return new static_sequence_generator (__data, __size);
+}
+
+template <class T>
+size_t static_sequence_generator<T>::get_size() const {
+	return __count;
+}
+
 class random_int_generator : public generator<int> {
-	size_t count, size;
+	size_t __count, __size;
 public:
-	explicit random_int_generator(size_t _s) : count(0), size(_s) {}
+	explicit random_int_generator(size_t _s)
+			: __count(0), __size(_s) {}
 	int generate() override ;
 	bool has_end() const override ;
 	generator<int> *clone() const override ;
 };
 
 class node_name_generator : public generator<std::string> {
-	std::string base;
-	size_t count;
+	std::string __base;
+	size_t __count;
 public:
 	explicit node_name_generator(const std::string &_b);
 	std::string generate() override ;

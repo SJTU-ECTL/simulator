@@ -1,50 +1,24 @@
 #include "generator.h"
 #include "urandom.h"
 
-template <class T>
-template <size_t n>
-static_sequence_generator<T>::static_sequence_generator(const T (&seq)[n])
-		: size(n), count(0), data((const T*) &seq) {}
-
-template <class T>
-bool static_sequence_generator<T>::has_end() const {
-	return count >= size;
-}
-
-template <class T>
-T static_sequence_generator<T>::generate() {
-	if (!has_end()) return data [count++];
-	throw ExceptionGeneratorEmpty ();
-}
-
-template <class T>
-generator<T>* static_sequence_generator<T>::clone() const {
-	return new static_sequence_generator (data, size);
-}
-
-template <class T>
-size_t static_sequence_generator<T>::get_size() const {
-	return count;
-}
-
 int random_int_generator::generate() {
-	if (!has_end()) { count++; return (int) mrand48(); }
+	if (!has_end()) { __count++; return (int) mrand48(); }
 	throw ExceptionGeneratorEmpty();
 }
 
 bool random_int_generator::has_end() const {
-	return count >= size;
+	return __count >= __size;
 }
 
 generator<int>* random_int_generator::clone() const {
-	return new random_int_generator(size);
+	return new random_int_generator(__size);
 }
 
 node_name_generator::node_name_generator(const std::string &_b)
-		: count(0), base(_b) {}
+		: __count(0), __base(_b) {}
 
 std::string node_name_generator::generate() {
-	return base + std::to_string(count++);
+	return __base + std::to_string(__count++);
 }
 
 bool node_name_generator::has_end() const { return false; }
@@ -95,7 +69,7 @@ std::vector<int> infinite_random_pattern_generator::generate() {
 }
 
 generator<std::vector<int>>* infinite_random_pattern_generator::clone() const {
-	assert(0);
+	assert(false);
 	return nullptr;
 }
 
@@ -105,9 +79,7 @@ size_t infinite_random_pattern_generator::input_num() const {
 
 random_pattern_generator::random_pattern_generator(size_t _inp_n, size_t _smp_n)
 		: infinite_random_pattern_generator(_inp_n),
-		  sample_num(_smp_n), current_sample_count(0) {
-	if (sample_num < 0) throw ExceptionRPGSmpLeqZero();
-}
+		  sample_num(_smp_n), current_sample_count(0) {}
 
 bool random_pattern_generator::has_end() const {
 	return current_sample_count == sample_num;
