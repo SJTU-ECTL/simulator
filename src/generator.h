@@ -25,14 +25,19 @@ class static_sequence_generator : public generator<T> {
 			, __count(0) {};
 public:
 	template <size_t _n>
-	explicit static_sequence_generator(const T (&seq)[_n])
-			: __count(0), __data(seq)
-			, __size(_n) {}
+	explicit static_sequence_generator(const T (&seq)[_n]);
 	T generate();
 	bool has_end() const ;
 	generator<T> *clone() const ;
 	size_t get_size() const ;
 };
+
+template <class T>
+template <size_t _n>
+static_sequence_generator<T>::static_sequence_generator
+		(const T (&seq)[_n])
+		: __count(0), __data(seq)
+		, __size(_n) {}
 
 template <class T>
 T static_sequence_generator<T>::generate() {
