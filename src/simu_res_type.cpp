@@ -1,5 +1,4 @@
 #include "simu_res_type.h"
-#include <algorithm>
 
 simulation_result::simulation_result
 		(BooleanNetwork *_net,

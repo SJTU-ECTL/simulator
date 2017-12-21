@@ -8,6 +8,7 @@ add_executable(simu_test
 		simu_res_type.cpp simu_res_type.h
 		generator.cpp generator.h
 		urandom.cpp urandom.h
+		bitset_manipulate.hpp
 		)
 
 target_link_libraries(simu_test bnet)
