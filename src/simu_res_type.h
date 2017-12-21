@@ -28,5 +28,8 @@ typedef struct simulation_result {
 
 } simulation_result_t;
 
+class focused_simulation_result {
+
+};
 
 #endif

@@ -18,7 +18,7 @@ public:
 	};
 
 private:
-    BnetNetwork *net;
+	BnetNetwork *net;
 	mutable memorize<size_t>                               node_num;
 	mutable memorize<size_t>                               gate_num;
 	mutable memorize<std::vector<bnode_id>>                input_node_vec;
@@ -32,11 +32,11 @@ private:
 	mutable memorize<std::unordered_map<bnode_id, size_t>> d2out;
 
 public:
-    explicit BooleanNetwork(const std::string &file);
+	explicit BooleanNetwork(const std::string &file);
 
-    ~BooleanNetwork();
+	~BooleanNetwork();
 
-    void PrintNetwork();
+	void PrintNetwork();
 
 	size_t input_num() const;
 	size_t output_num() const;
