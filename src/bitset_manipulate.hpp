@@ -74,10 +74,24 @@ static inline dyn_bit_set operator+()(const dyn_bit_set &lhs,
 	return cat_bit_set(lhs, rhs);
 }
 
+/* not understanding what this function is for */
 static std::vector<dyn_bit_set> breakdown(const dyn_bit_set &bs,
 										  const dyn_bit_set &row,
 										  const dyn_bit_set &col) {
-
+	assert(row.size() == col.size()
+		   && row == ~col
+		   && bs.size() == (1ul << row.size()));
+	size_t width = 1ul << (row.count());
+	size_t height = 1ul << (col.count());
+	size_t total = row.size();
+	std::vector<dyn_bit_set> result(height, dyn_bit_set(width));
+	for (size_t i = 0; i < bs.size(); i++) {
+		auto curr_int = dyn_bit_set(total, i);
+		auto key = extract(curr_int, col);
+		auto row_key = extract(curr_int, row);
+		result[key.to_ulong()][row_key.to_ulong()] = bs[i];
+	}
+	return result;
 }
 
 template <typename T>
@@ -101,30 +115,3 @@ dyn_bit_set vec_2_dbs(const std::vector<T> &vc) {
 }
 
 #endif
-
-/*
-// Puts a one dimensional bitset into a 2D array
-// with inputs specified by col on the column
-static std::vector<DBitset>
-breakdown(const DBitset& bitset,
-          const DBitset& row, const DBitset& col) {
-    assert(row.size() == col.size());
-    assert(row == ~col);
-    assert(bitset.size() == (1ul << row.size()));
-
-    size_t total = row.size();
-    size_t width = 1ul << (row.count());
-    size_t height = 1ul << (col.count());
-
-    std::vector<DBitset> result(height, DBitset(width));
-
-    for (size_t i = 0; i < bitset.size(); i++) {
-        auto currInd = DBitset(total, i);
-        auto key = extract(currInd, col);
-        auto rowKey = extract(currInd, row);
-        result[key.to_ulong()][rowKey.to_ulong()] = bitset[i] ;
-    }
-
-    return result;
-}
- */
