@@ -69,8 +69,8 @@ static inline dyn_bit_set cat_bit_set(const dyn_bit_set &lhs,
 	return res;
 }
 
-static inline dyn_bit_set operator+()(const dyn_bit_set &lhs,
-									  const dyn_bit_set &rhs) {
+static inline dyn_bit_set operator+(const dyn_bit_set &lhs,
+									const dyn_bit_set &rhs) {
 	return cat_bit_set(lhs, rhs);
 }
 
