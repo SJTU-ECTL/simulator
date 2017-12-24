@@ -2,6 +2,8 @@
 #include "memorize.hpp"
 #include <string>
 #include <set>
+#include <map>
+#include <list>
 #include <vector>
 #include <unordered_map>
 
@@ -50,4 +52,7 @@ public:
 	const std::set<bnode_id>    &get_internal_node_set() const ;
 	const std::set<bnode_id>    &get_total_node_set() const ;
 
+	BnetNode *getNodesList() const ;
+	BnetNode *getNodebyName(const std::string &name) const ;
+	const std::vector<bnode_id>& topologicalSort() const ;
 };

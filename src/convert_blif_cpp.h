@@ -1,9 +1,8 @@
 #ifndef __SIMULATOR__CONVERT__BLIF__CPP__H__
 #define __SIMULATOR__CONVERT__BLIF__CPP__H__
 
+//#include "bnet/bnet.h"
 #include <string>
-
-class BooleanNetwork;
 
 /**
  * @brief a converter class for BooleanNetwork to cpp
@@ -14,18 +13,20 @@ class BooleanNetwork;
  */
 
 class convert_blif_cpp {
-	BooleanNetwork *__b_net;
+	//BooleanNetwork *__b_net;
 	std::string __export_to;
 public:
-	explicit convert_blif_cpp(BooleanNetwork *,
+	explicit convert_blif_cpp(//BooleanNetwork *,
 							  const std::string &);
+	/*
 	void set(BooleanNetwork *);
 	void set(const std::string &);
 	void set(BooleanNetwork *,
 			 const std::string &);
-	void export();
+	//void export();
 
 	~convert_blif_cpp() = default;
+	 */
 };
 
 

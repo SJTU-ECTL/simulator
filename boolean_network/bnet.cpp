@@ -126,3 +126,53 @@ BooleanNetwork::get_internal_node_set() const {
 	internal_node_set.set(temp_set);
 	return internal_node_set.get();
 }
+
+
+/**
+ * @brief get the linked list of nodes in BnetNetwork
+ * @return the linked list of nodes in BnetNetwork
+ */
+
+BnetNode *BooleanNetwork::getNodesList() const {
+	return net->nodes;
+}
+
+/**
+ * @brief get the BnetNode in BnetNetwork by its name
+ * @return the BnetNode
+ */
+
+BnetNode *BooleanNetwork::getNodebyName(const std::string &name) const {
+	BnetNode *node = nullptr;
+	if (st_lookup(net->hash, name.c_str(), (void **) &node))
+		return node;
+	else
+		return nullptr;
+}
+
+const std::vector<BooleanNetwork::bnode_id> &
+BooleanNetwork::topologicalSort() const {
+	if (topo_sort_node_vec.is_valid())
+		return topo_sort_node_vec.get();
+	std::vector<std::string> sorted_list;
+	std::list<std::string> sorting_queue;
+	std::map<std::string, int> in_degree_table;
+	for (BnetNode *i = net->nodes; i != nullptr; i = i->next) {
+		in_degree_table[i->name] = i->ninp;
+		if (i->ninp == 0) sorting_queue.emplace_back(i->name);
+	}
+	while (!sorting_queue.empty()) {
+		std::string temp_node_name = sorting_queue.front();
+		sorting_queue.pop_front();
+		BnetNode *temp_node = getNodebyName(temp_node_name);
+		sorted_list.push_back(temp_node_name);
+		for (int i = 0; i < temp_node->nfo; i++) {
+			std::string out_node_name = temp_node->outputs[i];
+			in_degree_table[out_node_name] -= 1;
+			if (in_degree_table[out_node_name] == 0)
+				sorting_queue.push_back(out_node_name);
+		}
+	}
+	topo_sort_node_vec.set(sorted_list);
+	return topo_sort_node_vec.get();
+}
