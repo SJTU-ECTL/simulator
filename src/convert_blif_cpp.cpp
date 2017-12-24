@@ -6,6 +6,7 @@
 #include <set>
 #include <unordered_map>
 #include <cassert>
+#include "bnet/bnet.h"
 
 using std::string;
 using std::unordered_map;
@@ -13,11 +14,11 @@ using std::set;
 using std::vector;
 
 convert_blif_cpp::convert_blif_cpp
-		(//BooleanNetwork *b_net,
+		(BooleanNetwork *b_net,
 		 const string &export_to)
-		: //__b_net(b_net)
-		__export_to(export_to) {}
-/*
+		: __b_net(b_net)
+		, __export_to(export_to) {}
+
 void convert_blif_cpp::set(const std::string &var) {
 	__export_to = var;
 }
@@ -30,7 +31,7 @@ void convert_blif_cpp::set(BooleanNetwork *bn,
 						   const std::string &str) {
 	__b_net = bn;
 	__export_to = str;
-}*/
+}
 
 /**
  * @brief: string functions convert strings to c/cpp lines
@@ -77,7 +78,7 @@ create_alias(const vector<string>& set,
 	}
 	return alias;
 }
-/*
+
 static string get_func_string(const string& i1,
 							  const string& i2,
 							  BnetNode* node) {
@@ -165,12 +166,11 @@ static string getFunctionString(const string& i,
 			assert(false);
 	}
 }
-*/
 
 /**
  * @brief: function export the bnet into a cpp file
  * */
-/*
-void convert_blif_cpp::export() {
 
-}*/
+void convert_blif_cpp::exporter() {
+
+}
