@@ -30,8 +30,6 @@ private:
 	mutable memorize<std::set   <bnode_id>>                total_node_set;
 	mutable memorize<std::set   <bnode_id>>                internal_node_set;
 	mutable memorize<std::vector<bnode_id>>                topo_sort_node_vec;
-	mutable memorize<void *>                               simulation_context;
-	mutable memorize<std::unordered_map<bnode_id, size_t>> d2out;
 
 public:
 	explicit BooleanNetwork(const std::string &file);
