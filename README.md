@@ -24,3 +24,18 @@
 
 - Each input/output/internal node start with no-digit symbol
 - Allow Symbol only from [A-Za-z0-9_], no other symbol
+
+## Project Structure
+
+```mermaid
+graph LR
+A[exception] --> B[generator]
+C[urandom] --> B[generator]
+D[BooleanNetwork] --> E[convert blif to cpp]
+E --> F[circuit simulation]
+B --> G[simulation diff test]
+F --> G
+H[simulation result type] --> G
+D --> H
+```
+
