@@ -27,7 +27,7 @@
 
 ## Project Structure
 
-```mermaid
+<div class="mermaid">
 graph LR
 A[exception] --> B[generator]
 C[urandom] --> B[generator]
@@ -37,5 +37,4 @@ B --> G[simulation diff test]
 F --> G
 H[simulation result type] --> G
 D --> H
-```
-
+</div>
