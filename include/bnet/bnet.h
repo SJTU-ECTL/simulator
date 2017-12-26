@@ -21,15 +21,15 @@ public:
 
 private:
 	BnetNetwork *net;
-	mutable memorize<size_t>                               node_num;
-	mutable memorize<size_t>                               gate_num;
-	mutable memorize<std::vector<bnode_id>>                input_node_vec;
-	mutable memorize<std::set   <bnode_id>>                input_node_set;
-	mutable memorize<std::vector<bnode_id>>                output_node_vec;
-	mutable memorize<std::set   <bnode_id>>                output_node_set;
-	mutable memorize<std::set   <bnode_id>>                total_node_set;
-	mutable memorize<std::set   <bnode_id>>                internal_node_set;
-	mutable memorize<std::vector<bnode_id>>                topo_sort_node_vec;
+	mutable memorize<size_t>                node_num;
+	mutable memorize<size_t>                gate_num;
+	mutable memorize<std::vector<bnode_id>> input_node_vec;
+	mutable memorize<std::set   <bnode_id>> input_node_set;
+	mutable memorize<std::vector<bnode_id>> output_node_vec;
+	mutable memorize<std::set   <bnode_id>> output_node_set;
+	mutable memorize<std::set   <bnode_id>> total_node_set;
+	mutable memorize<std::set   <bnode_id>> internal_node_set;
+	mutable memorize<std::vector<bnode_id>> topo_sort_node_vec;
 
 public:
 	explicit BooleanNetwork(const std::string &file);

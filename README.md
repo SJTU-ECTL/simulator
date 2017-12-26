@@ -19,3 +19,8 @@
 
 - First set the `install_bnet`, edit its configuration with executable `dummy_target`.
 - Then change the build target into `simu_test`.
+
+### Circuit Convention
+
+- Each input/output/internal node start with no-digit symbol
+- Allow Symbol only from [A-Za-z0-9_], no other symbol

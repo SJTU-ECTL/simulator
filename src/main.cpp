@@ -1,6 +1,7 @@
 #include <iostream>
 #include "bnet/bnet.h"
 #include "bnet/memorize.hpp"
+#include "convert_blif_cpp.h"
 #include "generator.h"
 #include "urandom.h"
 
@@ -8,8 +9,6 @@
 
 int main() {
 #ifdef __DEBUG__MODULES__
-	BooleanNetwork *a;
-	std::cout << "BooleanNetwork check over" << std::endl;
 	int _var[10]; for (int _ = 0; _ < 10; _++) _var[_] = _;
 	static_sequence_generator<int> sa(_var);
 	while (!sa.has_end()) std::cout << sa.generate() << std::endl;
@@ -25,6 +24,9 @@ int main() {
 		std::cout << std::endl;
 	}
 	std::cout << "urandom check over" << std::endl;
+	// BooleanNetwork *test = new BooleanNetwork("./src/benchmark/apex4.blif");
+	// convert_blif_cpp cv(test, "./src/exported.cpp");
+	// cv.exporter();
 #endif
 	return 0;
 }
