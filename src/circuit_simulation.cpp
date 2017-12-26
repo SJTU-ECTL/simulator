@@ -50,3 +50,10 @@ void* circuit_simulation::get_simulation_context() {
 	context.set(ctx);
 	return context.get();
 }
+
+circuit_simulation::~circuit_simulation() {
+	if (!context.is_valid()) return;
+	auto ctx = (SimulationContext*) context.get();
+	dlclose(ctx->libHandle);
+	delete ctx;
+}

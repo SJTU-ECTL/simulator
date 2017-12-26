@@ -34,7 +34,7 @@ public:
 	explicit circuit_simulation(BooleanNetwork *bnet,
 								const std::string &loc);
 	void *get_simulation_context();
-	~circuit_simulation() = default;
+	~circuit_simulation();
 };
 
 #endif
