@@ -30,7 +30,7 @@
 ## Project Structure
 
 ```mermaid
-graph LR
+graph TD
 A[exception] --> B[generator]
 C[urandom] --> B[generator]
 D[BooleanNetwork] --> E[convert blif to cpp]
@@ -39,6 +39,9 @@ B --> G[simulation diff test]
 F --> G
 H[simulation result type] --> G
 D --> H
+C --> E
+I[Memorize] --> D
+I --> F
 ```
 ### Simulation Diff Test
 
