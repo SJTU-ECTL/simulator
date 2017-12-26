@@ -25,8 +25,8 @@ int main() {
 		std::cout << std::endl;
 	}
 	std::cout << "urandom check over" << std::endl;
-	BooleanNetwork *test = new BooleanNetwork("./src/benchmark/C1908.blif");
-	circuit_simulation simu(test, "./src/");
+	BooleanNetwork *test = new BooleanNetwork("./simulator_src/benchmark/C1908.blif");
+	circuit_simulation simu(test, "./simulator_src/");
 	auto var_ctx = simu.get_simulation_context();
 #endif
 	return 0;
