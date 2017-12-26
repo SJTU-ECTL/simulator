@@ -2,7 +2,7 @@
 
 > Simulator for `blif` circuit.
 
-> Origin Author: [Yao yue](https://github.com/tripack45)
+> Origin Author: [Yao Yue](https://github.com/tripack45)
 
 > Maintainer: [Su Hang](https://github.com/tonyfloatersu) and [Zhou Zhuangzhuang](https://github.com/zzhou612)
 
@@ -25,6 +25,8 @@
 - Each input/output/internal node start with no-digit symbol
 - Allow Symbol only from [A-Za-z0-9_], no other symbol
 
+<div style="page-break-after: always;"></div>
+
 ## Project Structure
 
 ```mermaid
@@ -38,3 +40,18 @@ F --> G
 H[simulation result type] --> G
 D --> H
 ```
+### Simulation Diff Test
+
+```mermaid
+graph LR
+A[generator] -->|input| B[circuit simulation]
+A[generator] -->|input| C[...]
+A[generator] -->|input| D[circuit simulation]
+B --> |output| E[Diff Check]
+C --> |output| E[Diff Check]
+D --> |output| E[Diff Check]
+E --> F[Result report]
+```
+
+
+
