@@ -4,6 +4,7 @@
 #include "convert_blif_cpp.h"
 #include "generator.h"
 #include "urandom.h"
+#include "circuit_simulation.h"
 
 #define __DEBUG__MODULES__
 
@@ -24,9 +25,9 @@ int main() {
 		std::cout << std::endl;
 	}
 	std::cout << "urandom check over" << std::endl;
-	// BooleanNetwork *test = new BooleanNetwork("./src/benchmark/apex4.blif");
-	// convert_blif_cpp cv(test, "./src/exported.cpp");
-	// cv.exporter();
+	BooleanNetwork *test = new BooleanNetwork("./src/benchmark/C1908.blif");
+	circuit_simulation simu(test, "./src/");
+	auto var_ctx = simu.get_simulation_context();
 #endif
 	return 0;
 }

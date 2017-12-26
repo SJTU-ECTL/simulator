@@ -16,15 +16,13 @@ class BooleanNetwork;
 class convert_blif_cpp {
 	BooleanNetwork *__b_net;
 	std::string __export_to;
+	std::string __cpp_name;
 public:
 	explicit convert_blif_cpp(BooleanNetwork *,
 							  const std::string &);
-	void set(BooleanNetwork *);
-	void set(const std::string &);
-	void set(BooleanNetwork *,
-			 const std::string &);
 	void exporter();
-
+	const std::string &get_loc() const;
+	const std::string &get_name() const;
 	~convert_blif_cpp() = default;
 
 };

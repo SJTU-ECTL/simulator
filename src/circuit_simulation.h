@@ -1,11 +1,12 @@
 #ifndef __SIMULATOR__CIRCUIT__SIMULATION__H__
 #define __SIMULATOR__CIRCUIT__SIMULATION__H__
 
-#include "bnet/bnet.h"
 #include "convert_blif_cpp.h"
 #include "bnet/memorize.hpp"
-#include "generator.h"
 #include <string>
+#include <vector>
+
+class BooleanNetwork;
 
 #define CONTEXT_PTR(x) (static_cast<SimulationContext*>(x))
 
@@ -30,7 +31,8 @@ class circuit_simulation {
 	BooleanNetwork *__b_net;
 	memorize<void *> context;
 public:
-	explicit circuit_simulation(BooleanNetwork *bnet, const std::string &loc);
+	explicit circuit_simulation(BooleanNetwork *bnet,
+								const std::string &loc);
 	void *get_simulation_context();
 	~circuit_simulation() = default;
 };

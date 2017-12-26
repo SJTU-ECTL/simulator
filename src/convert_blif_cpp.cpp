@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <cassert>
 #include "bnet/bnet.h"
+#include "urandom.h"
 
 using std::string;
 using std::unordered_map;
@@ -17,20 +18,9 @@ convert_blif_cpp::convert_blif_cpp
 		(BooleanNetwork *b_net,
 		 const string &export_to)
 		: __b_net(b_net)
-		, __export_to(export_to) {}
-
-void convert_blif_cpp::set(const std::string &var) {
-	__export_to = var;
-}
-
-void convert_blif_cpp::set(BooleanNetwork *bn) {
-	__b_net = bn;
-}
-
-void convert_blif_cpp::set(BooleanNetwork *bn,
-						   const std::string &str) {
-	__b_net = bn;
-	__export_to = str;
+		, __export_to(export_to) {
+	int random_var = abs(urandom::random_int());
+	__cpp_name = "sim_ckt_" + std::to_string(random_var) + ".cpp";
 }
 
 /**
@@ -167,6 +157,14 @@ static string getFunctionString(const string& i,
 	}
 }
 
+const std::string& convert_blif_cpp::get_loc() const {
+	return __export_to;
+}
+
+const std::string& convert_blif_cpp::get_name() const {
+	return __cpp_name;
+}
+
 /**
  * @brief: function export the bnet into a cpp file
  * */
@@ -180,9 +178,9 @@ void convert_blif_cpp::exporter() {
 	size_t nInputs = __b_net->input_num();
 	size_t nOutputs = __b_net->output_num();
 	size_t nInternals = internals.size();
-	std::ofstream ofile(__export_to);
+	std::ofstream ofile(__export_to + __cpp_name);
 	if (!ofile) {
-		std::cerr << "Cannot open " << __export_to << std::endl;
+		std::cerr << "Cannot open " << __export_to + __cpp_name << std::endl;
 		return;
 	}
 	auto inputAlias = create_alias(inputs, "input");
