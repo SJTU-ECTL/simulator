@@ -25,6 +25,11 @@
 - Each input/output/internal node start with no-digit symbol
 - Allow Symbol only from [A-Za-z0-9_], no other symbol
 
+## TBD
+
+- [ ] simulation diff test enable.
+- [ ] BooleanNetwork version match, current one is ahead of origin version.
+
 <div style="page-break-after: always;"></div>
 
 ## Project Structure
