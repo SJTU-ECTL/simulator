@@ -11,7 +11,7 @@ add_executable(
 		urandom.cpp urandom.h
 		convert_blif_cpp.cpp convert_blif_cpp.h
 		circuit_simulation.cpp circuit_simulation.h
-		)
+		stopwatch.hpp)
 
 target_link_libraries(
 		simu_test

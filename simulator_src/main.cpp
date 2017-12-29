@@ -5,11 +5,12 @@
 #include "generator.h"
 #include "urandom.h"
 #include "circuit_simulation.h"
+#include "stopwatch.hpp"
 
 #define __DEBUG__MODULES__
 
 int main() {
-#ifdef __DEBUG__MODULES__
+#ifndef __DEBUG__MODULES__
 	int _var[10]; for (int _ = 0; _ < 10; _++) _var[_] = _;
 	static_sequence_generator<int> sa(_var);
 	while (!sa.has_end()) std::cout << sa.generate() << std::endl;
@@ -25,9 +26,27 @@ int main() {
 		std::cout << std::endl;
 	}
 	std::cout << "urandom check over" << std::endl;
-	BooleanNetwork *test = new BooleanNetwork("./simulator_src/benchmark/C1908.blif");
+#endif
+#ifdef __DEBUG__MODULES__
+	BooleanNetwork *test = new BooleanNetwork("./simulator_src/benchmark/C880.blif");
 	circuit_simulation simu(test, "./simulator_src/");
-	auto var_ctx = simu.get_simulation_context();
+	size_t inp_num = test->input_num();
+	auto temp_vec = urandom::random_bit_vec(inp_num);
+
+	StopWatch watcher;
+	auto var_ctx = CONTEXT_PTR(simu.get_simulation_context());
+	watcher.take("compile over");
+
+	std::vector<int> output;
+	std::vector<int> nodes;
+	nodes.resize(test->get_internal_node_set().size());
+	output.resize(test->output_num());
+
+	for (int i = 0; i < 100000; i++) {
+		var_ctx->circuit(temp_vec.data(), output.data(), nodes.data());
+	}
+	watcher.take("runtime over");
+	watcher.report();
 #endif
 	return 0;
 }
