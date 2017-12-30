@@ -3,7 +3,7 @@
 
 #include <string>
 
-class BooleanNetwork;
+class BnetNetwork;
 
 /**
  * @brief a converter class for BooleanNetwork to cpp
@@ -14,11 +14,11 @@ class BooleanNetwork;
  */
 
 class convert_blif_cpp {
-	BooleanNetwork *__b_net;
+	BnetNetwork *__b_net;
 	std::string __export_to;
 	std::string __cpp_name;
 public:
-	explicit convert_blif_cpp(BooleanNetwork *,
+	explicit convert_blif_cpp(BnetNetwork *,
 							  const std::string &);
 	void exporter();
 	const std::string &get_loc() const;

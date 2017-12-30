@@ -1,7 +1,7 @@
 #include "simu_res_type.h"
 
 simulation_result::simulation_result
-		(BooleanNetwork *_net,
+		(BnetNetwork *_net,
 		 size_t _s) : sample_num(_s) {
 	size_t net_inpNum = _net->input_num();
 	size_t net_outNum = _net->output_num();

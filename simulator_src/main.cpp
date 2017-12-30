@@ -1,11 +1,5 @@
 #include <iostream>
 #include "bnet/bnet.h"
-#include "bnet/memorize.hpp"
-#include "convert_blif_cpp.h"
-#include "generator.h"
-#include "urandom.h"
-#include "circuit_simulation.h"
-#include "stopwatch.hpp"
 
 #define __DEBUG__MODULES__
 
@@ -26,8 +20,6 @@ int main() {
 		std::cout << std::endl;
 	}
 	std::cout << "urandom check over" << std::endl;
-#endif
-#ifdef __DEBUG__MODULES__
 	BooleanNetwork *test = new BooleanNetwork("./simulator_src/benchmark/C880.blif");
 	circuit_simulation simu(test, "./simulator_src/");
 	size_t inp_num = test->input_num();

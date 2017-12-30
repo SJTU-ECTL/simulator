@@ -15,7 +15,7 @@ using std::set;
 using std::vector;
 
 convert_blif_cpp::convert_blif_cpp
-		(BooleanNetwork *b_net,
+		(BnetNetwork *b_net,
 		 const string &export_to)
 		: __b_net(b_net)
 		, __export_to(export_to) {
@@ -68,6 +68,8 @@ create_alias(const vector<string>& set,
 	}
 	return alias;
 }
+
+#ifdef __TO__BE__DONE__
 
 static string getFunctionString(const string& i1,
 								const string& i2,
@@ -157,6 +159,8 @@ static string getFunctionString(const string& i,
 	}
 }
 
+#endif
+
 const std::string& convert_blif_cpp::get_loc() const {
 	return __export_to;
 }
@@ -169,6 +173,7 @@ const std::string& convert_blif_cpp::get_name() const {
  * @brief: function export the bnet into a cpp file
  * */
 
+#ifdef __TO__BE__DONE__
 void convert_blif_cpp::exporter() {
 	auto topSort = __b_net->topologicalSort();
 	auto inputs = __b_net->get_input_node_vec();
@@ -267,3 +272,5 @@ void convert_blif_cpp::exporter() {
 
 	ofile.close();
 }
+
+#endif

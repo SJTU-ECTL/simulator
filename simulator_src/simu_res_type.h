@@ -23,7 +23,7 @@ typedef struct simulation_result {
 	std::vector<std::string> output_name_vec;
 	std::vector<std::string> internal_name_vec;
 
-	explicit simulation_result(BooleanNetwork *_net,
+	explicit simulation_result(BnetNetwork *_net,
 							   size_t _sample_num);
 
 } simulation_result_t;

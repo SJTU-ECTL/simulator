@@ -1,9 +1,5 @@
-//
-// Created by tripack on 17-4-3.
-//
-
-#ifndef VE490_STOPWATCH_H
-#define VE490_STOPWATCH_H
+#ifndef __SIMULATOR__STOPWATCH__H__
+#define __SIMULATOR__STOPWATCH__H__
 
 #include <chrono>
 #include <iostream>
