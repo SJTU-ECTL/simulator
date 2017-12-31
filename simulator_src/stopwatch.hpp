@@ -60,31 +60,28 @@ public:
 		std::cout << std::setw(10) << "Acc\n";
 
 		for (int i = 0; i < counter; ++i) {
-			auto t = duration[i] - begin;
 			long dt;
 			std::cout << std::setw(2) << (i + 1) << ".";
 			std::cout << std::setw(15) << name[i];
 
-			if (i > 0)
-				t = duration[i] - duration[i - 1];
-			else
-				t = duration[i] - begin;
 			if (seconds)
-				dt = std::chrono::duration_cast<sec>(t).count();
+				dt = std::chrono::duration_cast<sec>(
+						duration[i] - ((i > 0) ? duration[i - 1] : begin)
+				).count();
 			else
-				dt = std::chrono::duration_cast<ms>(t).count();
+				dt = std::chrono::duration_cast<ms>(
+						duration[i] - ((i > 0) ? duration[i - 1] : begin)
+				).count();
 			std::cout << std::setw(8) << dt;
 			if (seconds)
 				std::cout << "s ";
 			else
 				std::cout << "ms";
 
-
-			t = duration[i] - begin;
 			if (seconds)
-				dt = std::chrono::duration_cast<sec>(t).count();
+				dt = std::chrono::duration_cast<sec>(duration[i] - begin).count();
 			else
-				dt = std::chrono::duration_cast<ms>(t).count();
+				dt = std::chrono::duration_cast<ms>(duration[i] - begin).count();
 			std::cout << std::setw(8) << dt;
 			if (seconds)
 				std::cout << "s ";
