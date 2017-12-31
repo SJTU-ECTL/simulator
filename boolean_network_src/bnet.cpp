@@ -13,6 +13,12 @@ BnetNode::BnetNode(const _BnetNode *node) {
         inputs.emplace_back(node->inputs[i]);
     for (int i = 0; i < nout; ++i)
         outputs.emplace_back(node->outputs[i]);
+    __is_onset = node->polarity == 0;
+    BnetTabline *temp = node->f;
+    while (temp != nullptr) {
+        truthTable.emplace_back(temp->values);
+        temp = temp->next;
+    }
 }
 
 BnetNode::~BnetNode() = default;
@@ -27,6 +33,14 @@ const std::vector<BnetNodeID> &BnetNode::getInputs() const {
 
 const std::vector<BnetNodeID> &BnetNode::getOutputs() const {
     return outputs;
+}
+
+const bool BnetNode::is_onset() const {
+	return __is_onset;
+}
+
+const std::vector<std::string>& BnetNode::getTruthTable() const {
+	return truthTable;
 }
 
 BnetNetwork::BnetNetwork(const std::string &file) {

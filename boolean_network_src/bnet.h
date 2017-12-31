@@ -12,6 +12,8 @@ private:
     int nout;
     std::vector<BnetNodeID> inputs;
     std::vector<BnetNodeID> outputs;
+	std::vector<std::string> truthTable;
+	bool __is_onset;
 
 public:
     explicit BnetNode(const _BnetNode *node);
@@ -23,6 +25,10 @@ public:
     const std::vector<BnetNodeID> &getInputs() const;
 
     const std::vector<BnetNodeID> &getOutputs() const;
+
+	const bool is_onset() const;
+
+	const std::vector<std::string> &getTruthTable() const;
 };
 
 class BnetNetwork {
