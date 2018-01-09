@@ -2,11 +2,11 @@
 #define __SIMULATOR__CIRCUIT__SIMULATION__H__
 
 #include "convert_blif_cpp.h"
-#include "bnet/memorize.hpp"
+#include "memorize.hpp"
 #include <string>
 #include <vector>
 
-class BooleanNetwork;
+class BnetNetwork;
 
 #define CONTEXT_PTR(x) (static_cast<SimulationContext*>(x))
 
@@ -28,10 +28,10 @@ enum NODE_TYPE {INPUT, OUTPUT, INTERNAL};
 
 class circuit_simulation {
 	convert_blif_cpp __converter;
-	BooleanNetwork *__b_net;
+	BnetNetwork *__b_net;
 	memorize<void *> context;
 public:
-	explicit circuit_simulation(BooleanNetwork *bnet,
+	explicit circuit_simulation(BnetNetwork *bnet,
 								const std::string &loc);
 	void *get_simulation_context();
 	~circuit_simulation();

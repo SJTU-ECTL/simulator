@@ -7,7 +7,7 @@
 #define STRING_CMD_BASE "g++ -std=c++14 -shared -fPIC -Ofast -march=native \\\n"
 
 circuit_simulation::circuit_simulation
-		(BooleanNetwork *bnet,
+		(BnetNetwork *bnet,
 		 const std::string &loc)
 		: __b_net(bnet)
 		, __converter(bnet, loc),

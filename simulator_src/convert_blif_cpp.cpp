@@ -6,6 +6,7 @@
 #include <set>
 #include <unordered_map>
 #include <cassert>
+#include <deque>
 #include "bnet/bnet.h"
 #include "urandom.h"
 
@@ -15,221 +16,159 @@ using std::set;
 using std::vector;
 
 convert_blif_cpp::convert_blif_cpp
-		(BnetNetwork *b_net,
-		 const string &export_to)
-		: __b_net(b_net)
-		, __export_to(export_to) {
-	int random_var = abs(urandom::random_int());
-	__cpp_name = "sim_ckt_" + std::to_string(random_var) + ".cpp";
-}
-
-/**
- * @brief: string functions convert strings to c/cpp lines
- * @return: a line of c/cpp code representing the
- * */
-
-static string notG(const string& i) {
-	return "(" + ("~" + i) + ")";
-}
-
-static string andG(const string& i1,
-				   const string& i2) {
-	return "(" + i1 + " & " + i2 + ")";
-}
-
-static string xorG(const string& i1,
-				   const string& i2) {
-	return "(" + i1 + " ^ " + i2 + ")";
+        (BnetNetwork *b_net,
+         const string &export_to)
+        : __b_net(b_net)
+        , __export_to(export_to) {
+    int random_var = abs(urandom::random_int());
+    __cpp_name = "sim_ckt_" + std::to_string(random_var) + ".cpp";
 }
 
 static unordered_map<string, string>
 create_alias(const set<string>& set,
-			 const string& setName) {
-	int counter = 0;
-	unordered_map<string, string> alias;
-	alias.clear();
-	for (auto &i : set) {
-		assert(alias.count(i) == 0);
-		alias[i] = setName + "[" + std::to_string(counter) + "]";
-		counter++;
-	}
+             const string& setName) {
+    int counter = 0;
+    unordered_map<string, string> alias;
+    alias.clear();
+    for (auto &i : set) {
+        assert(alias.count(i) == 0);
+        alias[i] = setName + "[" + std::to_string(counter) + "]";
+        counter++;
+    }
 }
 
 static unordered_map<string, string>
 create_alias(const vector<string>& set,
-			 const string& setName) {
-	int counter = 0;
-	unordered_map<string, string> alias;
-	alias.clear();
-	for (auto &i : set) {
-		assert(alias.count(i) == 0);
-		alias[i] = setName + "[" + std::to_string(counter) + "]";
-		counter++;
-	}
-	return alias;
+             const string& setName) {
+    int counter = 0;
+    unordered_map<string, string> alias;
+    alias.clear();
+    for (auto &i : set) {
+        assert(alias.count(i) == 0);
+        alias[i] = setName + "[" + std::to_string(counter) + "]";
+        counter++;
+    }
+    return alias;
 }
 
-#ifdef __TO__BE__DONE__
-
-static string getFunctionString(const string& i1,
-								const string& i2,
-								BnetNode* node) {
-	std::bitset<4> truthTable(0);
-	BnetTabline* f = node->f;
-	assert(f != nullptr);
-	while (f != nullptr) {
-		string line = f->values;
-		assert(line.size() == 2);
-		if (line == "00")
-			truthTable[0] = true;
-		else if (line == "01")
-			truthTable[1] = true;
-		else if (line == "10")
-			truthTable[2] = true;
-		else if (line == "11")
-			truthTable[3] = true;
-		else if (line == "-0")
-			truthTable[0] = truthTable [2] = true;
-		else if (line == "0-")
-			truthTable[0] = truthTable [1] = true;
-		else if (line == "-1")
-			truthTable[1] = truthTable [3] = true;
-		else if (line == "1-")
-			truthTable[2] = truthTable [3] = true;
-		else if (line == "--") {
-			truthTable[0] = truthTable[1] = true;
-			truthTable[2] = truthTable[3] = true;
-		} else {
-			std::cerr << "line = " << line << std::endl;
-			assert(false);
-		}
-		f = f->next;
-	}
-	if (node->polarity == 1) truthTable.flip();
-	switch (truthTable.to_ulong()) {
-		case 0x0: return "false";
-		case 0xF: return "true";
-		case 0x1: return andG(notG(i1), notG(i2));
-		case 0x2: return andG(notG(i1), i2);
-		case 0x3: return notG(i1);
-		case 0x4: return andG(i1, notG(i2));
-		case 0x5: return notG(i2);
-		case 0x6: return xorG(i1, i2);
-		case 0x7: return notG(andG(i1, i2));
-		case 0x8: return andG(i1, i2);
-		case 0x9: return notG(xorG(i1, i2));
-		case 0xA: return i2;
-		case 0xB: return notG(andG(i1, notG(i2)));
-		case 0xC: return i1;
-		case 0xD: return notG(andG(notG(i1) , i2));
-		case 0xE: return notG(andG(notG(i1), notG(i2)));
-		default:
-			assert(false);
-	}
+static string getFunctionString(const vector<string> &name_list,
+                                const string &truth_table) {
+    assert(truth_table.length() == name_list.size());
+    auto size = (int) name_list.size();
+    string func_string;
+    func_string.push_back('(');
+    for (int i = 0; i < size; i++) {
+        func_string += '(';
+        if (truth_table[i] == '1') func_string += name_list[i];
+        else if (truth_table[i] == '0') {
+            func_string += '!';
+            func_string += name_list[i];
+        } else if (truth_table[i] == '-')
+            func_string += '1';
+        else assert(false);
+        func_string += ") & ";
+    }
+    func_string += "1)";
+    return func_string;
 }
 
-static string getFunctionString(const string& i,
-								BnetNode* node) {
-	std::bitset<2> truthTable(0);
-	BnetTabline* f = node->f;
-	assert(f != nullptr);
-	while (f != nullptr) {
-		string line = f->values;
-		assert(line.size() == 1);
-		if (line == "0")
-			truthTable[0] = true;
-		else if (line == "1")
-			truthTable[1] = true;
-		else if (line == "-")
-			truthTable[0] = truthTable [1] = true;
-		else {
-			std::cerr << "line = " << line << std::endl;
-			assert(false);
-		}
-		f = f->next;
-	}
-	if (node->polarity == 1) truthTable.flip();
-	switch (truthTable.to_ulong()) {
-		case 0x0: return "false";
-		case 0x3: return "true";
-		case 0x1: return notG(i);
-		case 0x2: return i;
-		default:
-			assert(false);
-	}
+static string getFunctionString(BnetNode *node) {
+    const auto &truth_table_ls = node->getTruthTable();
+    const auto &name_list = node->getFanIns();
+    string func_string;
+    if (!node->isOnSet()) func_string += "(!";
+    func_string.push_back('(');
+    for (const auto &i : truth_table_ls) {
+        func_string += getFunctionString(name_list, i);
+        func_string += " | ";
+    }
+    func_string += "0)";
+    if (!node->isOnSet()) func_string += ")";
+    return func_string;
 }
-
-#endif
 
 const std::string& convert_blif_cpp::get_loc() const {
-	return __export_to;
+    return __export_to;
 }
 
 const std::string& convert_blif_cpp::get_name() const {
-	return __cpp_name;
+    return __cpp_name;
+}
+
+std::vector<BnetNodeID> TopologicalSort(const BnetNetwork *net) {
+    std::vector<BnetNodeID> sortedNodes;
+    std::deque<BnetNodeID> nodesQueue;
+    std::map<BnetNodeID, int> inDegrees;
+    for (auto node:net->getNodesList()) {
+        inDegrees[node->getName()] = (int) node->getFanIns().size();
+        if (node->getFanIns().empty())
+            nodesQueue.emplace_back(node->getName());
+    }
+    while (!nodesQueue.empty()) {
+        BnetNodeID id = nodesQueue.front();
+        sortedNodes.emplace_back(id);
+        nodesQueue.pop_front();
+        const BnetNode *node = net->getNodebyName(id);
+        for (const auto &output:node->getFanOuts()) {
+            inDegrees[output] -= 1;
+            if (inDegrees[output] == 0)
+                nodesQueue.push_back(output);
+        }
+    }
+    return sortedNodes;
 }
 
 /**
  * @brief: function export the bnet into a cpp file
  * */
 
-#ifdef __TO__BE__DONE__
 void convert_blif_cpp::exporter() {
-	auto topSort = __b_net->topologicalSort();
-	auto inputs = __b_net->get_input_node_vec();
-	auto outputs = __b_net->get_output_node_vec();
-	auto internalSet = __b_net->get_internal_node_set();
-	vector<string> internals(internalSet.begin(), internalSet.end());
-	size_t nInputs = __b_net->input_num();
-	size_t nOutputs = __b_net->output_num();
-	size_t nInternals = internals.size();
-	std::ofstream ofile(__export_to + __cpp_name);
-	if (!ofile) {
-		std::cerr << "Cannot open " << __export_to + __cpp_name << std::endl;
-		return;
-	}
-	auto inputAlias = create_alias(inputs, "input");
-	auto outputAlias = create_alias(outputs, "output");
-	auto internalAlias = create_alias(internals, "node");
-	ofile << "// cpp built by tool\n";
-	ofile << "#include <vector>\n";
-	ofile << "#include <string>\n";
-	ofile << "#define TYPE int\n";
-	ofile << "extern \"C\" {\n"
-		  << "void circuit(const TYPE input[], TYPE output[], TYPE node[]);\n"
-		  << "std::vector<std::string> inputNode();\n"
-		  << "std::vector<std::string> outputNode();\n"
-		  << "std::vector<std::string> internalNode();\n"
-		  << "}\n";
-	ofile << "void circuit(const TYPE input[], TYPE output[], TYPE node[]) {\n";
-	for (const auto& nodeName : inputs) {
-		const auto& aliasName = inputAlias.at(nodeName);
-		ofile << "\tconst TYPE& " << nodeName << " = " << aliasName << ";\n";
-	}
-	for (const auto& nodeName : outputs) {
-		const auto& aliasName = outputAlias.at(nodeName);
-		ofile << "\tTYPE& " << nodeName << " = " << aliasName << ";\n";
-	}
-	for (const auto& nodeName : internals) {
-		const auto& aliasName = internalAlias.at(nodeName);
-		ofile << "\tTYPE& " << nodeName << " = " << aliasName << ";\n";
-	}
+    auto topSort = TopologicalSort(this->__b_net);
+    auto inputs = __b_net->getInputNames();
+    auto outputs = __b_net->getOutputNames();
+    auto internals = __b_net->getInternalNames();
+    size_t nInputs = inputs.size();
+    size_t nOutputs = outputs.size();
+    size_t nInternals = internals.size();
+    std::ofstream ofile(__export_to + __cpp_name);
+    if (!ofile) {
+        std::cerr << "Cannot open " << __export_to + __cpp_name << std::endl;
+        return;
+    }
+    auto inputAlias = create_alias(inputs, "input");
+    auto outputAlias = create_alias(outputs, "output");
+    auto internalAlias = create_alias(internals, "node");
+    ofile << "// cpp built by tool\n";
+    ofile << "#include <vector>\n";
+    ofile << "#include <string>\n";
+    ofile << "#define TYPE int\n";
+    ofile << "extern \"C\" {\n"
+          << "void circuit(const TYPE input[], TYPE output[], TYPE node[]);\n"
+          << "std::vector<std::string> inputNode();\n"
+          << "std::vector<std::string> outputNode();\n"
+          << "std::vector<std::string> internalNode();\n"
+          << "}\n";
+    ofile << "void circuit(const TYPE input[], TYPE output[], TYPE node[]) {\n";
+    for (const auto& nodeName : inputs) {
+        const auto& aliasName = inputAlias.at(nodeName);
+        ofile << "\tconst TYPE& " << nodeName << " = " << aliasName << ";\n";
+    }
+    for (const auto& nodeName : outputs) {
+        const auto& aliasName = outputAlias.at(nodeName);
+        ofile << "\tTYPE& " << nodeName << " = " << aliasName << ";\n";
+    }
+    for (const auto& nodeName : internals) {
+        const auto& aliasName = internalAlias.at(nodeName);
+        ofile << "\tTYPE& " << nodeName << " = " << aliasName << ";\n";
+    }
 	for (const auto& node : topSort) {
 		BnetNode* n = __b_net->getNodebyName(node);
 		/* maybe reconstruct is better */
-		if (n->type == BNET_INPUT_NODE) {}
-		else if (n->type == BNET_CONSTANT_NODE) {
-			if (n->polarity == 1) ofile << "\t" <<  node << " = " << "false;\n";
+		if (n->isInput()) {}
+		else if (n->getFanIns().empty()) {
+			if (!n->isOnSet()) ofile << "\t" <<  node << " = " << "false;\n";
 			else ofile << "\t" << node << " = " << "true;\n";
-		} else if (n->ninp == 1) {
-			string i = n->inputs[0];
-			ofile << "\t" << node << " = " << getFunctionString(i, n) << ";\n";
-		} else {
-			assert(n->ninp == 2);
-			string i1(n->inputs[0]);
-			string i2(n->inputs[1]);
-			ofile << "\t" << node << " = " << getFunctionString(i1, i2, n) << ";\n";
-		}
+		} else ofile << "\t" << node << " = " << getFunctionString(n) << ";\n";
 	}
 	// Normalize the result.
 	ofile << "\tfor (int i = 0; i < " << nOutputs << "; ++i)\n";
@@ -272,5 +211,3 @@ void convert_blif_cpp::exporter() {
 
 	ofile.close();
 }
-
-#endif
