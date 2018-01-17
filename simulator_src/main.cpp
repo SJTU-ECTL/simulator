@@ -28,7 +28,7 @@ int main() {
     std::cout << "urandom check over" << std::endl;
 #endif
 #ifdef __DEBUG__MODULES__
-    BnetNetwork *test = new BnetNetwork("./simulator_src/benchmark/C880.blif");
+    BnetNetwork *test = new BnetNetwork("../data/benchmark/C880.blif");
     circuit_simulation simu(test, "./simulator_src/");
     size_t inp_num = test->getInputNames().size();
     auto temp_vec = urandom::random_bit_vec(inp_num);
