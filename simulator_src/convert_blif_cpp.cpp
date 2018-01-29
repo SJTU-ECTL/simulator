@@ -72,14 +72,31 @@ static string getFunctionString(const vector<string> &name_list,
     return func_string;
 }
 
+static string getSafeName(const string &name) {
+    string temp;
+    if (isdigit(name[0])) temp = "_";
+    else temp = " ";
+    temp += name;
+    std::replace(temp.begin(), temp.end(), '(', '_');
+    std::replace(temp.begin(), temp.end(), ')', '_');
+    std::replace(temp.begin(), temp.end(), '[', '_');
+    std::replace(temp.begin(), temp.end(), ']', '_');
+    std::replace(temp.begin(), temp.end(), '*', '_');
+    return temp;
+}
+
 static string getFunctionString(BnetNode *node) {
     const auto &truth_table_ls = node->getTruthTable();
-    const auto &name_list = node->getFanIns();
+    const auto &alias_name_list = node->getFanIns();
+    vector<string> _name_list;
+    for (auto &i : alias_name_list) {
+        _name_list.push_back(getSafeName(i));
+    }
     string func_string;
     if (!node->isOnSet()) func_string += "(!";
     func_string.push_back('(');
     for (const auto &i : truth_table_ls) {
-        func_string += getFunctionString(name_list, i);
+        func_string += getFunctionString(_name_list, i);
         func_string += " | ";
     }
     func_string += "0)";
@@ -118,10 +135,6 @@ std::vector<BnetNodeID> TopologicalSort(const BnetNetwork *net) {
     return sortedNodes;
 }
 
-/**
- * @brief: function export the bnet into a cpp file
- * */
-
 void convert_blif_cpp::exporter() {
     auto topSort = TopologicalSort(this->__b_net);
     auto inputs = __b_net->getInputNames();
@@ -151,24 +164,24 @@ void convert_blif_cpp::exporter() {
     ofile << "void circuit(const TYPE input[], TYPE output[], TYPE node[]) {\n";
     for (const auto& nodeName : inputs) {
         const auto& aliasName = inputAlias.at(nodeName);
-        ofile << "\tconst TYPE& " << nodeName << " = " << aliasName << ";\n";
+        ofile << "\tconst TYPE& " << getSafeName(nodeName) << " = " << (aliasName) << ";\n";
     }
     for (const auto& nodeName : outputs) {
         const auto& aliasName = outputAlias.at(nodeName);
-        ofile << "\tTYPE& " << nodeName << " = " << aliasName << ";\n";
+        ofile << "\tTYPE& " << getSafeName(nodeName) << " = " << (aliasName) << ";\n";
     }
     for (const auto& nodeName : internals) {
         const auto& aliasName = internalAlias.at(nodeName);
-        ofile << "\tTYPE& " << nodeName << " = " << aliasName << ";\n";
+        ofile << "\tTYPE& " << getSafeName(nodeName) << " = " << (aliasName) << ";\n";
     }
 	for (const auto& node : topSort) {
 		BnetNode* n = __b_net->getNodebyName(node);
 		/* maybe reconstruct is better */
 		if (n->isInput()) {}
 		else if (n->getFanIns().empty()) {
-			if (!n->isOnSet()) ofile << "\t" <<  node << " = " << "false;\n";
-			else ofile << "\t" << node << " = " << "true;\n";
-		} else ofile << "\t" << node << " = " << getFunctionString(n) << ";\n";
+			if (!n->isOnSet()) ofile << "\t" <<  getSafeName(node) << " = " << "false;\n";
+			else ofile << "\t" << getSafeName(node) << " = " << "true;\n";
+		} else ofile << "\t" << getSafeName(node) << " = " << getFunctionString(n) << ";\n";
 	}
 	// Normalize the result.
 	ofile << "\tfor (int i = 0; i < " << nOutputs << "; ++i)\n";
@@ -180,7 +193,7 @@ void convert_blif_cpp::exporter() {
 	ofile << "return std::vector<std::string> {\n";
 	int counter = 0;
 	for (const string& name: inputs) {
-		ofile << "\"" << name << "\", ";
+		ofile << "\"" << getSafeName(name) << "\", ";
 		if (counter % 5 == 4) ofile << "\n";
 		counter ++;
 	}
@@ -191,7 +204,7 @@ void convert_blif_cpp::exporter() {
 	ofile << "return std::vector<std::string> {\n";
 	counter = 0;
 	for (const string& name: outputs) {
-		ofile << "\"" << name << "\", ";
+		ofile << "\"" << getSafeName(name) << "\", ";
 		if (counter % 5 == 4) ofile << "\n";
 		counter ++;
 	}
@@ -202,7 +215,7 @@ void convert_blif_cpp::exporter() {
 	ofile << "return std::vector<std::string> {\n";
 	counter = 0;
 	for (const string& name: internals) {
-		ofile << "\"" << name << "\", ";
+		ofile << "\"" << getSafeName(name) << "\", ";
 		if (counter % 5 == 4) ofile << "\n";
 		counter ++;
 	}

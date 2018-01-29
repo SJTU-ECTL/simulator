@@ -26,7 +26,8 @@ BnetNode::BnetNode(const _BnetNode *node, bool add_source_sink, int info) {
     // added
     BnetTabline* f = node->f;
     while (f != nullptr) {
-        truth_table_.emplace_back(f->values);
+        if (f->values != nullptr)
+            truth_table_.emplace_back(f->values);
         f = f->next;
     }
     is_onset_ = node->polarity == 0;
@@ -93,9 +94,9 @@ BnetNetwork::BnetNetwork(const std::string &file, bool add_source_sink) {
     for (const _BnetNode *t = net_->nodes; t != nullptr; t = t->next) {
         int info;
         if (std::find(inputs_.begin(), inputs_.end(), std::string(t->name)) != inputs_.end())
-            info = 0;
+            info = SOURCE_ID;
         else if (std::find(outputs_.begin(), outputs_.end(), std::string(t->name)) != outputs_.end())
-            info = 1;
+            info = SINK_ID;
         else
             info = -1;
         auto node = new BnetNode(t, add_source_sink, info);

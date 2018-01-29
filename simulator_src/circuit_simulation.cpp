@@ -5,7 +5,7 @@
 #include <dlfcn.h>
 #include "generator.h"
 
-#define STRING_CMD_BASE "g++ -std=c++14 -shared -fPIC -Ofast -march=native \\\n"
+#define STRING_CMD_BASE "g++ -std=c++11 -shared -fPIC -march=native \\\n"
 
 circuit_simulation::circuit_simulation
         (BnetNetwork *bnet,
@@ -63,53 +63,4 @@ circuit_simulation::~circuit_simulation() {
     auto ctx = (SimulationContext*) context.get();
     dlclose(ctx->libHandle);
     delete ctx;
-}
-
-circuit_diff_context::circuit_diff_context(const std::string &_ckt_loc1,
-                                           const std::string &_ckt_loc2,
-                                           const std::string &_e_loc1,
-                                           const std::string &_e_loc2)
-        : ckt_loc1(_ckt_loc1), ckt_loc2(_ckt_loc2)
-        , export_loc1(_e_loc1), export_loc2(_e_loc2)
-        , bnet1(new BnetNetwork(ckt_loc1))
-        , bnet2(new BnetNetwork(ckt_loc2))
-        , simu1(bnet1, export_loc1)
-        , simu2(bnet2, export_loc2) {}
-
-bool circuit_diff_context::io_same() {
-    for (auto &i : bnet1->getInputNames())
-        for (auto &j : bnet2->getInputNames())
-            if (i != j) return false;
-    for (auto &i : bnet1->getOutputNames())
-        for (auto &j : bnet2->getOutputNames())
-            if (i != j) return false;
-    return true;
-}
-
-double circuit_diff_context::generate_diff_error_rate(int times) {
-    auto var_ctx1 = CONTEXT_PTR(simu1.get_simulation_context());
-    auto var_ctx2 = CONTEXT_PTR(simu2.get_simulation_context());
-    assert(io_same());
-    const size_t out_size = bnet1->getOutputNames().size();
-    std::vector<int> output1;
-    std::vector<int> output2;
-    std::vector<int> nodes1;
-    std::vector<int> nodes2;
-    nodes1.resize(bnet1->getInternalNames().size());
-    nodes2.resize(bnet1->getInternalNames().size());
-    output1.resize(bnet1->getOutputNames().size());
-    output2.resize(bnet1->getOutputNames().size());
-    random_pattern_generator gen(bnet1->getInputNames().size(), (size_t) times);
-    int count = 0;
-    while (!gen.has_end()) {
-        auto gen_what = gen.generate();
-        var_ctx1->circuit(gen_what.data(), output1.data(), nodes1.data());
-        var_ctx2->circuit(gen_what.data(), output2.data(), nodes2.data());
-        size_t __size = output1.size();
-        for (int i = 0; i < __size; i++)
-            if (output1[i] == output2[i])
-                count++;
-    }
-    return (double) count * 1.0 /
-           (double) (times * bnet1->getOutputNames().size());
 }

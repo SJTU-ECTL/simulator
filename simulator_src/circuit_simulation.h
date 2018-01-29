@@ -33,25 +33,10 @@ class circuit_simulation {
     std::string __source_location;
 public:
     explicit circuit_simulation(BnetNetwork *bnet,
-                                const std::string &loc);
+                                const std::string &loc = "/tmp/");
     void *get_simulation_context();
     const std::string &source_location();
     ~circuit_simulation();
 };
-
-class circuit_diff_context {
-    std::string ckt_loc1, ckt_loc2;
-    BnetNetwork *bnet1, *bnet2;
-    std::string export_loc1, export_loc2;
-    circuit_simulation simu1, simu2;
-public:
-    explicit circuit_diff_context(const std::string &_ckt_loc1,
-                                  const std::string &_ckt_loc2,
-                                  const std::string &_e_loc1,
-                                  const std::string &_e_loc2);
-    bool io_same();
-    double generate_diff_error_rate(int times);
-};
-
 
 #endif
